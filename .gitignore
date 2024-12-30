@@ -5,3 +5,5 @@ __pycache__/
 output.xlsx
 predict.xlsx
 feature_importance.png
+
+.env
