@@ -4,6 +4,10 @@ __pycache__/
 
 output.xlsx
 predict.xlsx
+output2.xlsx
+predict2.xlsx
 feature_importance.png
+
+models/
 
 .env
