@@ -1,4 +1,5 @@
 import pandas as pd
+from datetime import datetime, timedelta
 
 def calculate_match_expertises_percentage(host_expertises, booking_expertises):
     if not isinstance(booking_expertises, dict) or not booking_expertises:
@@ -34,10 +35,11 @@ def preprocess_host_data(df):
     df['is_suspended_host'] = df['is_suspended_host'].fillna(0)
     df['language_match'] = df.apply(lambda x: int(x['language'] in x['host_languages']), axis=1)
     df['gender_match'] = df.apply(lambda x: int(x['gender'].lower() == x['host_gender'].lower()) if x['gender'].lower() in ['male', 'female'] else 0, axis=1)
-    df['experience_match'] = df.apply(lambda x: int(x['parent_id'] in x['host_suitable_experiences']), axis=1)
+    df['experience_match'] = df.apply(lambda x: int(x['parent_id'] in x['host_suitable_experiences'] or x['parent_id'] not in x['host_unsuitable_experiences']), axis=1)
     df['age_match'] = df.apply(lambda x: 1 if isinstance(x['age'], dict) and x['age'].get('min') <= x['host_age'] <= x['age'].get('max') else 0, axis=1)
     df['availability_match'] = df.apply(lambda row: 1 if row['date_start'] in row['availability_dates'] else 0, axis=1)
     df['expertises_matched'] = df.apply(lambda row: calculate_match_expertises_percentage(row['host_expertises'], row['activities']), axis=1)
+    df['other_bookings_matched'] = df.apply(lambda row: check_no_overlap(row), axis=1)
 
     return df
 
@@ -49,5 +51,26 @@ def get_host_features():
         'experience_match', 
         'age_match', 
         'availability_match', 
-        'expertises_matched'
+        'expertises_matched',
+        'is_suitable_host',
+        'other_bookings_matched',
     ]
+
+def check_no_overlap(row):
+    if not row['time_start']:
+        row['time_start'] = "00:00"
+
+    new_booking_start = datetime.strptime(f"{row['date_start']} {row['time_start']}", "%Y-%m-%d %H:%M")
+    new_booking_end = new_booking_start + timedelta(minutes=row['duration_min'])
+    
+    for booking in row['bookings_on_day']:
+        if not booking['time_start']:
+            booking['time_start'] = "00:00"
+
+        existing_booking_start = datetime.strptime(f"{booking['date_start']} {booking['time_start']}", "%Y-%m-%d %H:%M")
+        existing_booking_end = existing_booking_start + timedelta(minutes=booking['duration_min'])
+        
+        if (new_booking_start < existing_booking_end) and (new_booking_end > existing_booking_start):
+            return 0
+    
+    return 1

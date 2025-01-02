@@ -39,13 +39,15 @@ def train_model(data):
 def simulate_unassigned_data(df):
     simulated_rows = []
     for index, row in df.iterrows():
+        if index % 2 != 0:
+            continue
+
         simulated_row = row.copy()
         simulated_row['assigned'] = 0
-
-        if index % 2 == 0:
-            simulated_row['is_suspended_host'] = 0
-        else:
-            simulated_row['availability_match'] = 0
+        simulated_row['is_suspended_host'] = random.randint(0, 1)
+        simulated_row['availability_match'] = 0
+        simulated_row['is_suitable_host'] = 1 - simulated_row['is_suspended_host']
+        simulated_row['other_bookings_matched'] = 0 
 
         if random.random() > 0.5:
             simulated_row['language_match'] = 1 - row['language_match']

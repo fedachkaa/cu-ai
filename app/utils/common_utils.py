@@ -38,7 +38,6 @@ def save_scaler_to_file(data, filename):
 
     with open(filename, 'wb') as file:
         pickle.dump(data, file)
-        print(f"Scaler saved to '{filename}'.")
 
 
 def load_scaler(filename):
