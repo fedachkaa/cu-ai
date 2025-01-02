@@ -1,5 +1,4 @@
 import pandas as pd
-import json
 from flask import current_app
 from app.model import load_model
 from app.utils.common_utils import save_data_to_file, save_feature_importance, load_scaler
@@ -20,7 +19,7 @@ def make_prediction(data):
         df['predicted_suitability'] = model.predict_proba(X_scaled)[:, 1]
         sorted_hosts = df.sort_values(by='predicted_suitability', ascending=False)
 
-        return True, 'Success', json.dumps(sorted_hosts[['host_id', 'predicted_suitability']].to_dict(orient='records'))
+        return True, 'Success', sorted_hosts[['host_id', 'predicted_suitability']].to_dict(orient='records')
 
     except Exception as e:
         return False, str(e), []

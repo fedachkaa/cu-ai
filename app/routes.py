@@ -24,7 +24,7 @@ def predict():
     success, message, result = make_prediction(data)
 
     if success:
-        return jsonify({'message': message, 'data': result})
+        return jsonify(result), 200
     return jsonify({'error': message}), 500
 
 @blueprint.route('/train', methods=['POST'])
