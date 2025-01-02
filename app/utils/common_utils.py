@@ -1,5 +1,8 @@
 import pandas as pd
+import os
 import matplotlib.pyplot as plt
+import pickle
+from sklearn.preprocessing import StandardScaler
 
 def save_data_to_file(df, file_path):
     try:
@@ -23,3 +26,29 @@ def save_feature_importance(features, coefficients):
     plt.title("Feature Importance based on Coefficients")
     plt.savefig('feature_importance.png')
     plt.close()
+
+
+def save_scaler_to_file(data, filename):
+    directory = os.path.dirname(filename)
+    if not os.path.exists(directory):
+        os.makedirs(directory) 
+        
+    if os.path.exists(filename) and os.path.getsize(filename) > 0:
+        return
+
+    with open(filename, 'wb') as file:
+        pickle.dump(data, file)
+        print(f"Scaler saved to '{filename}'.")
+
+
+def load_scaler(filename):
+    if not os.path.exists(filename):
+        return StandardScaler()
+
+    try:
+        with open(filename, 'rb') as file:
+            scaler = pickle.load(file)
+        return scaler
+    except Exception as e:
+        return StandardScaler()
+

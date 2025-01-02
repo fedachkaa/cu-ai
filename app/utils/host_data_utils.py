@@ -27,21 +27,13 @@ def calculate_match_expertises_percentage(host_expertises, booking_expertises):
         return (total_matches / total_categories)
     return 1
 
-
-def set_feature_priorities(df):
-    df['availability_match'] = df['availability_match'] * 2
-    df['is_suspended_host'] = df['is_suspended_host'] * 2
-    df['experience_match'] = df['experience_match'] * 1.5
-
-    return df
-
 def preprocess_host_data(df):
     df['category_encoded'] = pd.factorize(df['category'])[0]
     df['budget'] = df['budget'].fillna(0)
     df['host_age'] = df['host_age'].fillna(df['host_age'].median())
     df['is_suspended_host'] = df['is_suspended_host'].fillna(0)
     df['language_match'] = df.apply(lambda x: int(x['language'] in x['host_languages']), axis=1)
-    df['gender_match'] = df.apply(lambda x: int(x['host_gender'].lower() == x['gender'].lower()), axis=1)
+    df['gender_match'] = df.apply(lambda x: int(x['gender'].lower() == x['host_gender'].lower()) if x['gender'].lower() in ['male', 'female'] else 0, axis=1)
     df['experience_match'] = df.apply(lambda x: int(x['parent_id'] in x['host_suitable_experiences']), axis=1)
     df['age_match'] = df.apply(lambda x: 1 if isinstance(x['age'], dict) and x['age'].get('min') <= x['host_age'] <= x['age'].get('max') else 0, axis=1)
     df['availability_match'] = df.apply(lambda row: 1 if row['date_start'] in row['availability_dates'] else 0, axis=1)

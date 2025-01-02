@@ -3,8 +3,8 @@ import numpy as np
 import random
 from flask import current_app
 from app.model import save_model, load_model
-from app.utils.common_utils import save_data_to_file
-from app.utils.host_data_utils import set_feature_priorities, preprocess_host_data, get_host_features
+from app.utils.common_utils import save_data_to_file, save_scaler_to_file, load_scaler
+from app.utils.host_data_utils import preprocess_host_data, get_host_features
 
 def train_model(data):
     try:
@@ -15,17 +15,20 @@ def train_model(data):
         simulated_df = pd.DataFrame(simulated_rows)
         df = pd.concat([df, simulated_df], ignore_index=True)
 
-        df = set_feature_priorities(df)
-
         if (current_app.config["ENVIRONMENT"] == 'development'):
             save_data_to_file(df, 'output.xlsx')
 
         X = df[get_host_features()]
         y = df['assigned']
 
+        scaler = load_scaler(current_app.config['HOST_SCALER_PATH'])
+
+        X_scaled = scaler.fit_transform(X)
+
         model = load_model()
-        model.partial_fit(X, y, classes=np.unique(y))
+        model.partial_fit(X_scaled, y, classes=np.unique(y))
         save_model(model)
+        save_scaler_to_file(scaler, current_app.config['HOST_SCALER_PATH'])
 
         return True, "Model training completed successfully."
 

@@ -9,5 +9,5 @@ predict2.xlsx
 feature_importance.png
 
 models/
-
+scalers/
 .env
