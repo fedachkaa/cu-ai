@@ -5,6 +5,10 @@ from sklearn.linear_model import SGDClassifier
 MODEL_PATH = 'models/most_suitable_host_model.pkl'
 
 def save_model(model):
+    model_dir = os.path.dirname(MODEL_PATH)
+    if not os.path.exists(model_dir):
+        os.makedirs(model_dir)
+
     joblib.dump(model, MODEL_PATH)
 
 def load_model():

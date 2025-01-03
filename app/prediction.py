@@ -1,7 +1,8 @@
 import pandas as pd
 from flask import current_app
 from app.model import load_model
-from app.utils.common_utils import save_data_to_file, save_feature_importance, load_scaler
+from app.scaler import load_scaler
+from app.utils.common_utils import save_data_to_file, save_feature_importance
 from app.utils.host_data_utils import preprocess_host_data, get_host_features
 
 def make_prediction(data):
@@ -13,7 +14,7 @@ def make_prediction(data):
         if (current_app.config["ENVIRONMENT"] == 'development'):
             save_feature_importance(get_host_features(), model.coef_[0])
                 
-        scaler = load_scaler(current_app.config["HOST_SCALER_PATH"])
+        scaler = load_scaler()
         X_scaled = scaler.fit_transform(X)
 
         df['predicted_suitability'] = model.predict_proba(X_scaled)[:, 1]

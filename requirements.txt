@@ -1,4 +1,8 @@
-Flask
+setuptools>=70.0
 pandas
 joblib
+matplotlib
 scikit-learn
+flask
+python-dotenv
+numpy

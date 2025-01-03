@@ -2,12 +2,12 @@
 __pycache__/
 *.pyc
 *.pyo
-
+utils/__pycache__
+config/__pycache__
 output.xlsx
 predict.xlsx
 feature_importance.png
-utils/__pycache__
-config/__pycache__
 models/
 scalers/
 .env
+.git
