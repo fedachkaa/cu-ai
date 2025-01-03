@@ -35,7 +35,7 @@ def prepare_booking_data(booking_data, hosts):
     df = preprocess_host_data(df)
 
     if (current_app.config["ENVIRONMENT"] == 'development'):
-        save_data_to_file(df, 'predict.xlsx')
+        save_data_to_file(df, 'logs/predict.xlsx')
 
     X = df[get_host_features()]
     

@@ -9,5 +9,6 @@ predict.xlsx
 feature_importance.png
 models/
 scalers/
+logs/
 .env
 .git

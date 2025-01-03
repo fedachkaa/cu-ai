@@ -1,3 +1,4 @@
+import os
 import pandas as pd
 import matplotlib.pyplot as plt
 
@@ -17,10 +18,12 @@ def save_data_to_file(df, file_path):
 
 
 def save_feature_importance(features, coefficients):
+    os.makedirs('logs', exist_ok=True)
+
     plt.figure(figsize=(10, 6))
     plt.bar(features, coefficients)
     plt.xticks(rotation=20)
     plt.title("Feature Importance based on Coefficients")
-    plt.savefig('feature_importance.png')
+    plt.savefig('logs/feature_importance.png')
     plt.close()
 

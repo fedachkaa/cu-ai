@@ -1,4 +1,6 @@
 setuptools>=70.0
+openpyxl
+xlsxwriter
 pandas
 joblib
 matplotlib

@@ -17,7 +17,7 @@ def train_model(data):
         df = pd.concat([df, simulated_df], ignore_index=True)
 
         if (current_app.config["ENVIRONMENT"] == 'development'):
-            save_data_to_file(df, 'output.xlsx')
+            save_data_to_file(df, 'logs/output.xlsx')
 
         X = df[get_host_features()]
         y = df['assigned']
